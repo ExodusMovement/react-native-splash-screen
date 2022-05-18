@@ -14,6 +14,7 @@
 static bool showing = false;
 static bool showingVideo = false;
 static AVPlayer *lastPlayer = nil;
+static id videoPauseObserver = nil;
 
 @implementation RNSplashScreen
 - (dispatch_queue_t)methodQueue{
@@ -45,7 +46,7 @@ NSString* RNSplashScreenOverlayName = @"splashscreenVideo";
 
   NSNumber *pauseAfterMs = config[@"pauseAfterMs"];
   if (pauseAfterMs != nil) {
-      [player addBoundaryTimeObserverForTimes: @[[NSValue valueWithCMTime:CMTimeMake([pauseAfterMs intValue], 1000)]]
+      videoPauseObserver = [player addBoundaryTimeObserverForTimes: @[[NSValue valueWithCMTime:CMTimeMake([pauseAfterMs intValue], 1000)]]
                                                     queue:NULL // main queue
                                                usingBlock:^() {
           if (_player == nil) {
@@ -71,7 +72,9 @@ NSString* RNSplashScreenOverlayName = @"splashscreenVideo";
 }
 
 + (void) hideVideo {
+  if (showing) return;
   UIView *rootView = UIApplication.sharedApplication.keyWindow.subviews.lastObject;
+  [RNSplashScreen removeVideoPauseOption];
 
   for (CALayer *layer in rootView.layer.sublayers) {
     if ([[layer name] isEqualToString:RNSplashScreenOverlayName]) {
@@ -89,11 +92,20 @@ NSString* RNSplashScreenOverlayName = @"splashscreenVideo";
 }
 
 + (void)resumeVideo {
+  if (showing) return;
+  if (lastPlayer == nil) return;
+  [RNSplashScreen removeVideoPauseOption];
 
+  lastPlayer.rate = 1;
+  [lastPlayer play];
 }
 
 + (void)removeVideoPauseOption {
+  if (showing) return;
+  if (videoPauseObserver == nil || lastPlayer == nil) return;
 
+  [lastPlayer removeTimeObserver:videoPauseObserver];
+  videoPauseObserver = nil;
 }
 
 + (void)show {
@@ -109,6 +121,7 @@ NSString* RNSplashScreenOverlayName = @"splashscreenVideo";
 }
 
 + (void)hide {
+  if (showingVideo) return;
   // let's try to hide, even if showing == false, ...just in case
 
   UIImageView *imageView = (UIImageView *)[UIApplication.sharedApplication.keyWindow.subviews.lastObject viewWithTag:RNSplashScreenOverlayTag];
