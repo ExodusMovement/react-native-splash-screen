@@ -33,7 +33,11 @@ public class SplashScreen {
     private static boolean isVideoActive = false;
     private static boolean isImageActive = false;
 
-    public static void showVideo(Activity activity) {
+    public static void showVideo(final Activity activity) {
+        showVideo(activity, Arguments.createMap());
+    }
+
+    public static void showVideo(final Activity activity, final ReadableMap options) {
         if (activity == null) return;
         if (mSplashDialog != null) return;
         if (isImageActive || isVideoActive) return;
@@ -81,10 +85,21 @@ public class SplashScreen {
                     videoView.setVideoPath(videoPath);
                     videoView.start();
 
+                    final VideoView _videoView = videoView;
+
+                    int pauseAfterMs = options.hasKey("pauseAfterMs") ? options.getInt("pauseAfterMs") : 0;
+                    if (pauseAfterMs > 0) {
+                        videoView.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                _videoView.pause();
+                            }
+                        }, pauseAfterMs);
+                    }
+
                     if (!mSplashDialog.isShowing()) {
                         mSplashDialog.show();
                     }
-
 
                     videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                         @Override

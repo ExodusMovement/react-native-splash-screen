@@ -18,7 +18,7 @@ const Wrapper = {
   // no opts supported
   show: () => SplashScreen.show(),
   hide: () => SplashScreen.hide(),
-  showVideo: () => SplashScreen.showVideo(),
+  showVideo: (opts) => SplashScreen.showVideo(opts),
   hideVideo: () => SplashScreen.hideVideo(),
 }
 

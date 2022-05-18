@@ -57,8 +57,13 @@ public class SplashScreenModule extends ReactContextBaseJavaModule{
     }
 
     @ReactMethod
+    public void showVideo(ReadableMap options) {
+        SplashScreen.showVideo(getCurrentActivity(), options);
+    }
+
+    @ReactMethod
     public void showVideo() {
-        SplashScreen.showVideo(getCurrentActivity());
+        showVideo(Arguments.createMap());
     }
 
     @ReactMethod
