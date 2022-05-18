@@ -13,6 +13,7 @@
 
 static bool showing = false;
 static bool showingVideo = false;
+static AVPlayer *lastPlayer = nil;
 
 @implementation RNSplashScreen
 - (dispatch_queue_t)methodQueue{
@@ -25,6 +26,10 @@ NSInteger const RNSplashScreenOverlayTag = 39293;
 NSString* RNSplashScreenOverlayName = @"splashscreenVideo";
 
 + (void)showVideo {
+  [RNSplashScreen showVideo:(NSDictionary *)@{}];
+}
+
++ (void)showVideo:(NSDictionary *)config {
   if (showingVideo || showing) return;
 
   NSString *videoPath=[[NSBundle mainBundle] pathForResource:@"splashscreen" ofType:@"mp4"];
@@ -35,10 +40,25 @@ NSString* RNSplashScreenOverlayName = @"splashscreenVideo";
 
   NSURL *videoURL = [NSURL fileURLWithPath:videoPath];
   AVPlayer *player = [AVPlayer playerWithURL:videoURL];
-  playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+  lastPlayer = player;
+  __weak AVPlayer *_player = player;
+
+  NSNumber *pauseAfterMs = config[@"pauseAfterMs"];
+  if (pauseAfterMs != nil) {
+      [player addBoundaryTimeObserverForTimes: @[[NSValue valueWithCMTime:CMTimeMake([pauseAfterMs intValue], 1000)]]
+                                                    queue:NULL // main queue
+                                               usingBlock:^() {
+          if (_player == nil) {
+              return;
+          }
+          _player.rate = 0;
+          [_player pause];
+      }];
+  }
 
   AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
   playerLayer.frame = rootView.bounds;
+  playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
   [playerLayer setName:RNSplashScreenOverlayName];
 
   [rootView.layer addSublayer:playerLayer];
@@ -61,10 +81,19 @@ NSString* RNSplashScreenOverlayName = @"splashscreenVideo";
     }
   }
   showingVideo = false;
+  lastPlayer = nil;
 }
 
 + (void) hideVideo:(AVPlayerItem*)playerItem {
   [self hideVideo];
+}
+
++ (void)resumeVideo {
+
+}
+
++ (void)removeVideoPauseOption {
+
 }
 
 + (void)show {
@@ -127,6 +156,14 @@ RCT_EXPORT_METHOD(hideVideo) {
 
 RCT_EXPORT_METHOD(showVideo) {
   [RNSplashScreen showVideo];
+}
+
+RCT_EXPORT_METHOD(resumeVideo) {
+  [RNSplashScreen resumeVideo];
+}
+
+RCT_EXPORT_METHOD(removeVideoPauseOption) {
+  [RNSplashScreen removeVideoPauseOption];
 }
 
 @end
