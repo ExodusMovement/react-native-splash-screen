@@ -3,6 +3,8 @@ package org.devio.rn.splashscreen;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 import android.os.Build;
 import android.view.View;
 import android.graphics.Color;
@@ -48,10 +50,36 @@ public class SplashScreen {
 
                     Context context = activity.getApplicationContext();
 
-                    String videoUri = "android.resource://" + context.getPackageName() + "/" + R.raw.splashscreen;
+                    String videoPath = "android.resource://" + context.getPackageName() + "/" + R.raw.splashscreen;
+
+                    MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                    retriever.setDataSource(context, Uri.parse(videoPath));
+                    int videoWidth = Integer.valueOf(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
+                    int videoHeight = Integer.valueOf(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
+                    retriever.release();
+
+
 
                     VideoView videoView = (VideoView)mSplashDialog.findViewById(R.id.video_view);
-                    videoView.setVideoPath(videoUri);
+                    int viewHeight = videoView.getHeight();
+                    int viewWidth = videoView.getWidth();
+
+                    float ratioWidth = viewWidth / videoWidth;
+                    float ratioHeight = viewHeight / videoHeight;
+                    float fullWidth;
+                    float fullHeight;
+                    if (ratioWidth < ratioHeight ) {
+                        fullWidth = videoWidth * ratioWidth;
+                        fullHeight = videoHeight * ratioWidth;
+                    } else {
+                        fullWidth = videoWidth * ratioHeight;
+                        fullHeight = videoHeight * ratioHeight;
+                    }
+
+                    videoView.getLayoutParams().width = Math.round(fullWidth);
+                    videoView.getLayoutParams().height = Math.round(fullHeight);
+
+                    videoView.setVideoPath(videoPath);
                     videoView.start();
 
                     if (!mSplashDialog.isShowing()) {

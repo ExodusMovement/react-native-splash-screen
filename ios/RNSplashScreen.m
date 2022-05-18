@@ -35,6 +35,7 @@ NSString* RNSplashScreenOverlayName = @"splashscreenVideo";
 
   NSURL *videoURL = [NSURL fileURLWithPath:videoPath];
   AVPlayer *player = [AVPlayer playerWithURL:videoURL];
+  playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
 
   AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
   playerLayer.frame = rootView.bounds;
