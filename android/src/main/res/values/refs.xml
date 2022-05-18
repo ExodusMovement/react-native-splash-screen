@@ -3,4 +3,13 @@
     <item type="layout" name="launch_screen">
         @layout/launch_screen
     </item>
+    <item type="layout" name="video_view">
+        @layout/video_view
+    </item>
+    <item type="id" name="video_view">
+        @id/video_view
+    </item>
+    <item type="raw" name="splashscreen">
+        @raw/splashscreen
+    </item>
 </resources>

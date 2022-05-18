@@ -2,10 +2,15 @@ package org.devio.rn.splashscreen;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Build;
 import android.view.View;
 import android.graphics.Color;
 import android.util.Log;
+import android.media.MediaPlayer;
+import android.view.ViewGroup;
+import android.widget.VideoView;
+
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.ReadableMap;
@@ -23,6 +28,54 @@ import java.lang.ref.WeakReference;
 public class SplashScreen {
     private static Dialog mSplashDialog;
     private static WeakReference<Activity> mActivity;
+    private static boolean isVideoActive = false;
+    private static boolean isImageActive = false;
+
+    public static void showVideo(final Activity activity) {
+        if (activity == null) return;
+        if (mSplashDialog != null) return;
+        if (isImageActive || isVideoActive) return;
+        isVideoActive = true;
+
+        mActivity = new WeakReference<Activity>(activity);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (!activity.isFinishing()) {
+                    mSplashDialog = new Dialog(activity, R.style.SplashScreen_Fullscreen);
+                    mSplashDialog.setContentView(R.layout.video_view);
+                    mSplashDialog.setCancelable(false);
+
+                    Context context = activity.getApplicationContext();
+
+                    String videoUri = "android.resource://" + context.getPackageName() + "/" + R.raw.splashscreen;
+
+                    VideoView videoView = (VideoView)mSplashDialog.findViewById(R.id.video_view);
+                    videoView.setVideoPath(videoUri);
+                    videoView.start();
+
+                    if (!mSplashDialog.isShowing()) {
+                        mSplashDialog.show();
+                    }
+
+                    final VideoView _videoView = videoView;
+
+                    videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp)
+                        {
+                            hideVideo(activity);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    public static void hideVideo(Activity activity) {
+        if (isImageActive) return;
+        _hide(activity, Arguments.createMap());
+    }
 
     /**
      * 打开启动屏
@@ -30,6 +83,8 @@ public class SplashScreen {
     public static void show(final Activity activity, final ReadableMap options) {
         if (activity == null) return;
         if (mSplashDialog != null) return;
+        if (isImageActive || isVideoActive) return;
+        isImageActive = true;
 
         mActivity = new WeakReference<Activity>(activity);
         activity.runOnUiThread(new Runnable() {
@@ -66,6 +121,11 @@ public class SplashScreen {
      * 关闭启动屏
      */
     public static void hide(Activity activity, final ReadableMap options) {
+        if (isVideoActive) return;
+        _hide(activity, options);
+    }
+
+    private static void _hide(Activity activity, final ReadableMap options) {
         if (activity == null) {
             if (mActivity == null) {
                 return;
@@ -101,6 +161,8 @@ public class SplashScreen {
                 if (bgColor != null) {
                     setBackgroundColorSync(_activity, bgColor);
                 }
+                isImageActive = false;
+                isVideoActive = false;
             }
         });
     }
