@@ -19,6 +19,8 @@ const Wrapper = {
   hide: (opts = {}) => SplashScreen.hide(opts),
   showVideo: (opts = {}) => SplashScreen.showVideo(opts),
   hideVideo: (opts = {}) => SplashScreen.hideVideo(opts),
+  resumeVideo: () => SplashScreen.resumeVideo(),
+  removeVideoPauseOption: () => SplashScreen.removeVideoPauseOption(),
 }
 
 export default Wrapper

@@ -75,4 +75,14 @@ public class SplashScreenModule extends ReactContextBaseJavaModule{
     public void setBackgroundColor(String color) {
         SplashScreen.setBackgroundColor(getCurrentActivity(), color);
     }
+
+    @ReactMethod
+    public void removeVideoPauseOption() {
+        SplashScreen.removeVideoPauseOption(getCurrentActivity());
+    }
+
+    @ReactMethod
+    public void resumeVideo() {
+        SplashScreen.resumeVideo(getCurrentActivity());
+    }
 }
