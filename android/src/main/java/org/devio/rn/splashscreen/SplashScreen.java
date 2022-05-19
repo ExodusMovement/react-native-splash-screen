@@ -87,16 +87,15 @@ public class SplashScreen {
                     videoView.setVideoPath(videoPath);
                     videoView.start();
 
-                    final VideoView _videoView = videoView;
-                    lastVideoView = _videoView;
+                    lastVideoView = videoView;
 
                     int pauseAfterMs = options.hasKey("pauseAfterMs") ? options.getInt("pauseAfterMs") : 0;
                     if (pauseAfterMs > 0) {
                         videoPauseRunnable = new Runnable() {
                             @Override
                             public void run() {
-                                if (_videoView != null) {
-                                    _videoView.pause();
+                                if (lastVideoView != null) {
+                                    lastVideoView.pause();
                                 }
                             }
                         };
