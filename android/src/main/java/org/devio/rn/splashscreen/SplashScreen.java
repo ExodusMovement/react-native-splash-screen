@@ -33,7 +33,7 @@ public class SplashScreen {
     private static boolean isVideoActive = false;
     private static boolean isImageActive = false;
 
-    public static void showVideo(final Activity activity) {
+    public static void showVideo(Activity activity) {
         if (activity == null) return;
         if (mSplashDialog != null) return;
         if (isImageActive || isVideoActive) return;
@@ -54,30 +54,29 @@ public class SplashScreen {
 
                     MediaMetadataRetriever retriever = new MediaMetadataRetriever();
                     retriever.setDataSource(context, Uri.parse(videoPath));
-                    int videoWidth = Integer.valueOf(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
-                    int videoHeight = Integer.valueOf(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
+                    int videoWidth = Integer.parseInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
+                    int videoHeight = Integer.parseInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
                     retriever.release();
 
 
-
-                    VideoView videoView = (VideoView)mSplashDialog.findViewById(R.id.video_view);
-                    int viewHeight = videoView.getHeight();
-                    int viewWidth = videoView.getWidth();
+                    VideoView videoView = (VideoView) mSplashDialog.findViewById(R.id.video_view);
+                    float viewHeight = videoView.getHeight();
+                    float viewWidth = videoView.getWidth();
 
                     float ratioWidth = viewWidth / videoWidth;
                     float ratioHeight = viewHeight / videoHeight;
-                    float fullWidth;
-                    float fullHeight;
-                    if (ratioWidth < ratioHeight ) {
-                        fullWidth = videoWidth * ratioWidth;
-                        fullHeight = videoHeight * ratioWidth;
+                    int fullWidth;
+                    int fullHeight;
+                    if (ratioWidth < ratioHeight) {
+                        fullWidth = (int) (videoWidth * ratioWidth);
+                        fullHeight = (int) (videoHeight * ratioWidth);
                     } else {
-                        fullWidth = videoWidth * ratioHeight;
-                        fullHeight = videoHeight * ratioHeight;
+                        fullWidth = (int) (videoWidth * ratioHeight);
+                        fullHeight = (int) (videoHeight * ratioHeight);
                     }
 
-                    videoView.getLayoutParams().width = Math.round(fullWidth);
-                    videoView.getLayoutParams().height = Math.round(fullHeight);
+                    videoView.getLayoutParams().width = fullWidth;
+                    videoView.getLayoutParams().height = fullHeight;
 
                     videoView.setVideoPath(videoPath);
                     videoView.start();
@@ -86,12 +85,10 @@ public class SplashScreen {
                         mSplashDialog.show();
                     }
 
-                    final VideoView _videoView = videoView;
 
                     videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                         @Override
-                        public void onCompletion(MediaPlayer mp)
-                        {
+                        public void onCompletion(MediaPlayer mp) {
                             hideVideo(activity);
                         }
                     });
