@@ -202,25 +202,6 @@ Add a color called `primary_dark` in `app/src/main/res/values/colors.xml`
 
 #### Video Splashscreen
 
-Create a file called `video_view.xml` in `app/src/main/res/layout` (create the `layout`-folder if it doesn't exist). The contents of the file should be the following:
-
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-    <VideoView
-        android:id="@+id/video_view"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-    </VideoView>
-</RelativeLayout>
-```
-
 Customize your launch screen by creating a `splashscreen`-video-file and placing it in `raw`-folder.
 
 **Optional steps：**
