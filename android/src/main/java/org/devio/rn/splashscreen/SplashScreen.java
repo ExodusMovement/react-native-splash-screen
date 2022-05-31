@@ -119,6 +119,15 @@ public class SplashScreen {
                             manageVideoEnd(activity);
                         }
                     });
+
+                    videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                        @Override
+                        public boolean onError(MediaPlayer mp, int what, int extra) {
+                            Log.d("splashscreen video", "onError" + Integer.toString(what) + ", " + Integer.toString(extra));
+                            hideVideo(activity);
+                            return true;
+                        }
+                    });
                 }
             }
         });
