@@ -91,6 +91,20 @@ public class SplashScreen {
                     if (!allowAudio) {
                         videoView.setAudioFocusRequest(AudioManager.AUDIOFOCUS_NONE);
                     }
+
+                    videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener(){
+                        @Override
+                        public void onPrepared(MediaPlayer mp) {
+                            try {
+                                if (!allowAudio) {
+                                    mp.setVolume(0f, 0f);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+
                     videoView.start();
 
                     lastVideoView = videoView;
