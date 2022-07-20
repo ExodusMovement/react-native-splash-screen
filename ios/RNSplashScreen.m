@@ -79,6 +79,7 @@ NSString* RNSplashScreenOverlayName = @"splashscreenVideo";
 
 + (void) manageVideoEnded:(AVPlayerItem*)playerItem {
   if (loop) {
+    if (lastPlayer == nil) return;
     [lastPlayer seekToTime:kCMTimeZero];
   } else {
     [self hideVideo];
