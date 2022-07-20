@@ -11,6 +11,7 @@
 #import <React/RCTBridge.h>
 #import <AVFoundation/AVFoundation.h>
 
+static bool loop = false;
 static bool showing = false;
 static bool showingVideo = false;
 static AVPlayer *lastPlayer = nil;
@@ -45,7 +46,9 @@ NSString* RNSplashScreenOverlayName = @"splashscreenVideo";
   lastPlayer = player;
   __weak AVPlayer *_player = player;
 
-  NSNumber *pauseAfterMs = config[@"pauseAfterMs"];
+  loop = config[@"loopVideo"];
+	
+	NSNumber *pauseAfterMs = config[@"pauseAfterMs"];
   if (pauseAfterMs != nil) {
       videoPauseObserver = [player addBoundaryTimeObserverForTimes: @[[NSValue valueWithCMTime:CMTimeMake([pauseAfterMs intValue], 1000)]]
                                                     queue:NULL // main queue
@@ -69,13 +72,17 @@ NSString* RNSplashScreenOverlayName = @"splashscreenVideo";
   player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
 
   [[NSNotificationCenter defaultCenter] addObserver: self
-                                           selector: @selector(restartVideoFromBeginning:)
+                                           selector: @selector(manageVideoEnded:)
                                                name: AVPlayerItemDidPlayToEndTimeNotification
                                              object: [player currentItem]];
 }
 
-+ (void) restartVideoFromBeginning:(AVPlayerItem*)playerItem {
-  [lastPlayer seekToTime:kCMTimeZero];
++ (void) manageVideoEnded:(AVPlayerItem*)playerItem {
+  if (loop) {
+    [lastPlayer seekToTime:kCMTimeZero];
+  } else {
+    [self hideVideo];
+  }
 }
 
 + (void) hideVideo {
