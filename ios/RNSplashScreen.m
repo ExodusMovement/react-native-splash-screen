@@ -46,6 +46,13 @@ NSString* RNSplashScreenOverlayName = @"splashscreenVideo";
   lastPlayer = player;
   __weak AVPlayer *_player = player;
 
+  // Start the video from defined second
+  NSNumber *startSecond = config[@"startSecond"];
+  if (startSecond != nil) {
+    CMTime newTime = CMTimeMakeWithSeconds([startSecond floatValue], 1);
+    [lastPlayer seekToTime:newTime];
+  }
+
   loop = config[@"loopVideo"];
 	
 	NSNumber *pauseAfterMs = config[@"pauseAfterMs"];
