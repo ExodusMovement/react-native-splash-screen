@@ -111,9 +111,9 @@ public class SplashScreen {
                     lastVideoView = videoView;
 
                     loopVideo = options.hasKey("loopVideo") ? options.getBoolean("loopVideo") : false;
-                    int startMs = options.hasKey("startMs") ? options.getInt("startMs") : 0;
-                    if (startMs > 0) {
-                        videoView.seekTo(startMs);
+                    double startSecond = options.hasKey("startSecond") ? options.getDouble("startSecond") : 0;
+                    if (startSecond > 0) {
+                        videoView.seekTo((int) startSecond * 1000);
                     }
                     
                     int pauseAfterMs = options.hasKey("pauseAfterMs") ? options.getInt("pauseAfterMs") : 0;
