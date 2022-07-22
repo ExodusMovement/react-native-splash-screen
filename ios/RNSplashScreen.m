@@ -61,8 +61,8 @@ NSString* RNSplashScreenOverlayName = @"splashscreenVideo";
   }
 
   loop = config[@"loopVideo"];
-	
-	NSNumber *pauseAfterMs = config[@"pauseAfterMs"];
+
+  NSNumber *pauseAfterMs = config[@"pauseAfterMs"];
   if (pauseAfterMs != nil) {
       videoPauseObserver = [player addBoundaryTimeObserverForTimes: @[[NSValue valueWithCMTime:CMTimeMake([pauseAfterMs intValue], 1000)]]
                                                     queue:NULL // main queue
