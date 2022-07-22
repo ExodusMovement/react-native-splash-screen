@@ -57,7 +57,7 @@ NSString* RNSplashScreenOverlayName = @"splashscreenVideo";
   NSNumber *startSecond = config[@"startSecond"];
   if (startSecond != nil) {
     CMTime newTime = CMTimeMakeWithSeconds([startSecond floatValue], 1);
-    [lastPlayer seekToTime:newTime];
+    [player seekToTime:newTime];
   }
 
   loop = config[@"loopVideo"];
