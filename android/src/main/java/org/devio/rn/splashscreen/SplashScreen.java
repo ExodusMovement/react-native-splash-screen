@@ -31,6 +31,7 @@ import java.lang.ref.WeakReference;
 public class SplashScreen {
     private static Dialog mSplashDialog;
     private static WeakReference<Activity> mActivity;
+    private static boolean allowAudio = false;
     private static boolean loopVideo = false;
     private static boolean isVideoActive = false;
     private static boolean isImageActive = false;
@@ -88,7 +89,7 @@ public class SplashScreen {
 
                     videoView.setVideoPath(videoPath);
 
-                    boolean allowAudio = options.hasKey("allowAudio") ? options.getBoolean("allowAudio") : false;
+                    allowAudio = options.hasKey("allowAudio") ? options.getBoolean("allowAudio") : false;
                     if (!allowAudio) {
                         videoView.setAudioFocusRequest(AudioManager.AUDIOFOCUS_NONE);
                     }
