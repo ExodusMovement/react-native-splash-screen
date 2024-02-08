@@ -10,7 +10,7 @@
 #import "RNSplashScreen.h"
 #import <React/RCTBridge.h>
 
-static bool showing = false;
+static UIView* splash = nil;
 
 @implementation RNSplashScreen
 - (dispatch_queue_t)methodQueue{
@@ -22,30 +22,17 @@ RCT_EXPORT_MODULE(SplashScreen)
 NSInteger const RNSplashScreenOverlayTag = 39293;
 
 + (void)show {
-  if (showing) return;
-
-  NSString* launchImageName = [RNSplashScreen launchImageNameForOrientation:UIDeviceOrientationPortrait];
-  UIImage *image = [UIImage imageNamed:launchImageName];
-  // currently, this depends on having all required launch screen images
-  if (image == nil) return;
-
-  showing = true;
-  UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-  // Give some decent tagvalue or keep a reference of imageView in self
-  imageView.tag = RNSplashScreenOverlayTag;
-  imageView.contentMode = UIViewContentModeScaleAspectFill;
-  [UIApplication.sharedApplication.keyWindow.subviews.lastObject addSubview:imageView];
+  if (splash != nil) return;
+  UIViewController *sb = [[UIStoryboard storyboardWithName:@"Launch Screen" bundle:nil] instantiateInitialViewController];
+  splash = sb.view;
+  [UIApplication.sharedApplication.keyWindow.subviews.lastObject addSubview:splash];
 }
 
 + (void)hide {
-  // let's try to hide, even if showing == false, ...just in case
-
-  UIImageView *imageView = (UIImageView *)[UIApplication.sharedApplication.keyWindow.subviews.lastObject viewWithTag:RNSplashScreenOverlayTag];
-  if (imageView != nil) {
-    [imageView removeFromSuperview];
+  if (splash != nil) {
+    [splash removeFromSuperview];
+    splash = nil;
   }
-
-  showing = false;
 }
 
 + (NSString *)launchImageNameForOrientation:(UIDeviceOrientation)orientation {
