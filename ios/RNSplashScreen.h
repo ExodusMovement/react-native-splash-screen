@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 
 @interface RNSplashScreen : NSObject<RCTBridgeModule>
++ (void)setSplash: (UIView *)splash;
 + (void)show;
 + (void)hide;
 @end

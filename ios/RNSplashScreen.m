@@ -10,7 +10,8 @@
 #import "RNSplashScreen.h"
 #import <React/RCTBridge.h>
 
-static UIView* splash = nil;
+static UIView* _splash = nil;
+static BOOL visible = false;
 
 @implementation RNSplashScreen
 - (dispatch_queue_t)methodQueue{
@@ -19,17 +20,21 @@ static UIView* splash = nil;
 
 RCT_EXPORT_MODULE(SplashScreen)
 
++ (void)setSplash: (UIView *)splash{
+  _splash = splash;
+}
+
 + (void)show {
-  if (splash != nil) return;
-  UIViewController *sb = [[UIStoryboard storyboardWithName:@"Launch Screen" bundle:nil] instantiateInitialViewController];
-  splash = sb.view;
-  [UIApplication.sharedApplication.keyWindow.subviews.lastObject addSubview:splash];
+  if (!visible){
+    [UIApplication.sharedApplication.keyWindow.subviews.lastObject addSubview:_splash];
+    visible = true;
+  }
 }
 
 + (void)hide {
-  if (splash != nil) {
-    [splash removeFromSuperview];
-    splash = nil;
+  if (visible) {
+    [_splash removeFromSuperview];
+    visible = false;
   }
 }
 
