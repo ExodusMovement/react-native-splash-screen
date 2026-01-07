@@ -1,5 +1,7 @@
 package org.devio.rn.splashscreen;
 
+import androidx.annotation.Nullable;
+
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -28,32 +30,16 @@ public class SplashScreenModule extends ReactContextBaseJavaModule{
      * 打开启动屏
      */
     @ReactMethod
-    public void show() {
-        show(Arguments.createMap());
-    }
-
-    /**
-     * 打开启动屏
-     */
-    @ReactMethod
-    public void show(ReadableMap options) {
-        SplashScreen.show(getCurrentActivity(), options);
+    public void show(@Nullable ReadableMap options) {
+        SplashScreen.show(getCurrentActivity(), options != null ? options : Arguments.createMap());
     }
 
     /**
      * 关闭启动屏
      */
     @ReactMethod
-    public void hide() {
-        hide(Arguments.createMap());
-    }
-
-    /**
-     * 关闭启动屏
-     */
-    @ReactMethod
-    public void hide(ReadableMap options) {
-        SplashScreen.hide(getCurrentActivity(), options);
+    public void hide(@Nullable ReadableMap options) {
+        SplashScreen.hide(getCurrentActivity(), options != null ? options : Arguments.createMap());
     }
 
     @ReactMethod
