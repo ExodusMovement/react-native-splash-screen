@@ -64,7 +64,11 @@ public class SplashScreen {
                     retriever.setDataSource(context, Uri.parse(videoPath));
                     int videoWidth = Integer.parseInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
                     int videoHeight = Integer.parseInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
-                    retriever.release();
+                    try {
+                        retriever.release();
+                    } catch (Exception e) {
+                        Log.d("RNSplashScreen", "Error releasing MediaMetadataRetriever", e);
+                    }
 
 
                     VideoView videoView = (VideoView) mSplashDialog.findViewById(R.id.video_view);
